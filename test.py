@@ -74,7 +74,7 @@ class TestMatmul(unittest.TestCase):
 			matmul_jik,
 			matmul_jki,
 			matmul_kij,
-			matmul_kij
+			matmul_kji
 		)
 
 		p, q, r = 5,6,7
