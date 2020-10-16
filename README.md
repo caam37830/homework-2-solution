@@ -28,8 +28,15 @@ The following rubric will be used for grading.
 |   | Autograder | Correctness | Style | Total |
 |:-:|:-:|:-:|:-:|:-:|
 | Problem 0 |  |   |  | /25 |
+| Part A | /2 |   |  | /5 |
+| Part B |  |   |  | /5 |
+| Part C | /3 |   |  | /10 |
+| Part D | /2 |   |  | /5 |
 | Problem 1 |  |   |  | /55 |
-| Problem 2 |  |   |  | /20 |
+| Part A | /12 |   |  | /30 |
+| Part B | /3 |   |  | /15 |
+| Part C | /2 |   |  | /10 |
+| Problem 2 | /2 |   |  | /20 |
 
 Correctness will be based on code (i.e. did you provide was was aksed for) and the content of [`answers.md`](answers.md).
 
