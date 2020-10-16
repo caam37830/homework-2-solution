@@ -211,6 +211,6 @@ def markov_matrix(n):
 		A[j+1,j] = 0.5
 
 	# boundaries
-	A[1,0] = 1.0
-	A[n-2,n-1] = 1.0
+	A[1,0] = 0.5; A[0,0] = 0.5
+	A[n-2,n-1] = 0.5; A[-1,-1] = 0.5
 	return A

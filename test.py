@@ -165,10 +165,11 @@ class TestMarkov(unittest.TestCase):
 
 
 	def test_markov_matrix(self):
-		B = np.array([[0. , 0.5, 0. , 0. ],
-		[1. , 0. , 0.5, 0. ],
-		[0. , 0.5, 0. , 1. ],
-		[0. , 0. , 0.5, 0. ]])
+		B = np.array(
+			[[0.5, 0.5, 0. , 0. ],
+			[0.5, 0. , 0.5, 0. ],
+			[0. , 0.5, 0. , 0.5],
+			[0. , 0. , 0.5, 0.5]])
 
 		A = markov_matrix(4)
 

@@ -235,17 +235,27 @@ Also note that the optimal exponent for matrix-matrix multiplication is still un
 
 ## Problem 3 - Markov Chains (20 points)
 
-A Markov Chain models a random walk through a sequence of states. We'll consider a simple random walk on a 1-dimensional grid.  A "classic" description of the problem is that a drunk (or very confused) person wanders down the sidewalk.  However, because they are easily confused, they choose whether to take a step forward or backward with equal probablility.
+A Markov Chain models a random walk through a sequence of states. We'll consider a simple random walk on a 1-dimensional grid.  A "classic" description of the problem is that a drunk (or very confused) person wanders down the sidewalk.  However, because they are easily confused, they choose whether to take a step forward or backward with equal probability.
 
-We'll consider discrete positions on the sidewalk.  We'll say there are `n` positions total, and that position `i` is adjacent to positions `i+1` and `i-1`, except for position `0` which is only adjacent to position `1`, and position `n-1` which is only adjacent to position `n-2`, so if the person reaches either end of the sidewalk they just turn around and take a step back towards the middle.
+We'll consider discrete positions on the sidewalk.  We'll say there are `n` positions total, and that position `i` is adjacent to positions `i+1` and `i-1`, except for position `0` which is only adjacent to position `1`, and position `n-1` which is only adjacent to position `n-2`.  At these endpoints, we'll say the person either stays in the same location or moves to the neighboring position with equal probability (they either stand confused or turn around).
 
 The drunkard's position at time `t` is only dependent on their position at time `t-1`.  Because they are making random movements, their position is a random variable `p`.  `p` can be expressed as a vector, where `p[i|t]` is the probability that the person is at position `i` at time `t`.  To get to time `t` from time `t-1`, we can compute `p[i|t] = 0.5 * p[i-1|t-1] + 0.5 * p[i+1|t-1]` (with necessary modifications for endpoints).
 
 Another way to state this is that we can get the vector `p` at time `t` from the vector `p` at time `t-1` by calculating the product `A * p[:|t-1]`, where `A` is an `n x n` matrix, with the `i`th column of `A` has `0.5` in row `i+1`, `0.5` in row `i-1`, and `0` in all other entries (this encodes the probabilities of where the person can end up from state `i`).
 
 1. Write a function `markov_matrix(n)` which returns the matrix `A` above for the random walk on the sidewalk of length `n`.  Make the necessary modifications for the endpoints of the sidewalk.
-2. Run a simulation where the person starts at `i=0` at time `t=0` on a sidewalk of length `n=50`.  Evolve the vector `p` for 1000 time steps.
-3. Calculate the largest eigenvector of the matrix `A`.  Normalize the vector so its entries sum to 1. (e.g. `v = v / np.sum(v)`). How close is this to `p` at `t=1000` in part 2 (give the euclidean distance between the two vectors?)
+2. Run a simulation where the person starts at `i=0` at time `t=0` on a sidewalk of length `n=50` (i.e. `p` at time 0 is a vector of length 50 with `p[0] = 1` and 0 everywhere else).  Plot the vector `p` for `t in (10, 100, 1000)`.  Give your plot labels and a title.
+3. Calculate the eigenvector with largest eigenvalue of the matrix `A`.  Normalize the vector so its entries sum to 1. (e.g. `v = v / np.sum(v)`). How close is this to `p` at `t=1000` in part 2 (give the euclidean distance between the two vectors?)  How close is this to `p` at `t=2000`?
+
+
+A few notes on the above problem (you don't need to use this information in your answers):
+* In this problem, `A` is what is called a *doubly stochastic* matrix (rows and columns sum to 1)
+* `A` is also symmetric and tri-diagonal.  You can use `la.eigh_tridiagonal` for maximum performance.
+* You may notice a strong similarity between running the simulation and running power method (see the OOP lecture)
+* No matter how many times you apply the matrix `A`, you should have `np.sum(p) = 1` (it is a probability distribution after all...) If you're theoretically inclined, try proving this from the properties of the matrix `A`.
+* over time, `p` "spreads out" - this demonstrates our uncertainty about where the random walker will be.
+
+
 
 
 ## Feedback
