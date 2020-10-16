@@ -154,8 +154,8 @@ def matmul_blocked(B, C):
 
 	slices = (slice(0, n//2), slice(n//2, n))
 	for I in slices:
-		for J in slices:
-			for K in slices:
+		for K in slices:
+			for J in slices:
 				A[I, J] = A[I, J] + matmul_blocked(B[I, K], C[K, J])
 
 	return A

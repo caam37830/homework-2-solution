@@ -8,9 +8,9 @@ Reminder: you can embed images in markdown.  If you are asked to make a plot, sa
 
 Please put functions and class definitions in [`matlib.py`](matlib.py)
 
-Please put your code to generate plots, run experiments etc. [`script.py`](script.py).
+Please put your code to generate plots, run experiments etc. in [`script.py`](script.py).
 
-You may need to use conda to install `tqdm` to run the starter code for problem 4.  You can run
+You can run
 ```
 conda install --file requirements.txt
 ```
@@ -28,15 +28,15 @@ The following rubric will be used for grading.
 |   | Autograder | Correctness | Style | Total |
 |:-:|:-:|:-:|:-:|:-:|
 | Problem 0 |  |   |  | /25 |
-| Part A | /2 |   |  | /5 |
-| Part B |  |   |  | /5 |
-| Part C | /3 |   |  | /10 |
-| Part D | /2 |   |  | /5 |
+| Part A | /2 | /2 | /1 | /5 |
+| Part B |  | /3 | /2 | /5 |
+| Part C | /3 | /5 | /2 | /10 |
+| Part D | /2 | /5 | /2 | /5 |
 | Problem 1 |  |   |  | /55 |
-| Part A | /12 |   |  | /30 |
-| Part B | /3 |   |  | /15 |
-| Part C | /2 |   |  | /10 |
-| Problem 2 | /2 |   |  | /20 |
+| Part A | /12 | /15 | /3 | /30 |
+| Part B | /3 | /10 | /2 | /15 |
+| Part C | /2 | /6  | /2 | /10 |
+| Problem 2 | /2 | /15  | /3 | /20 |
 
 Correctness will be based on code (i.e. did you provide was was aksed for) and the content of [`answers.md`](answers.md).
 
@@ -147,21 +147,21 @@ for i in range(p):
 
 There are 6 different orders (outer loop to inner loop) in which you might loop over these indices: `ijk`, `ikj`, `jik`, `jki`, `kij`, `kji`.
 
-Write 6 functions: `matmul_***` where `***` is replaced by each option above.  For example, `matmul_ijk` would use the nested loops demonstrated above.  Use Numba to create just-in time compiled versions of these functions.  For each function `A = matmul_***(B, C)` should be equivalent to `A = B @ C`
+Write 6 functions: `matmul_***` where `***` is replaced by each option above.  For example, `matmul_ijk` would use the nested loops demonstrated above.  Use Numba to make these functions compile just-in time.  For each function `A = matmul_***(B, C)` should be equivalent to `A = B @ C`
 
 Compare the time it takes to run each of the 6 versions of `matmul_***` above with BLAS dgemm (called through SciPy) and NumPy `matmul`.  (Remember to precompile your JIT functions before timing).
 Use random `n x n` matrices for `B` and `C`, i.e. `p = q = r = n`.  Use row-major `ndarray`s in NumPy.
 
 Make a log-log plot of the runtimes of the 9 functions, for 10 values of `n` logarithmically spaced between 100 and 4000.  Include a legend, axis labels, and a plot title.
 
-All of these implementations have an O(n^3) asymptotic run time.  Give an explanation for why some loop orders are faster than others.
+All of these implementations have an O(n**3) asymptotic run time, and perform an identical number of floating point operations.  Give an explanation for why some loop orders are faster than others - why is the fastest version fastest?  Why is the slowest version slowest?
 
 
 ### Part B - Blocked Matrix Multiplication (15 points)
 
 In this problem, we'll assume that all matrices involved are `n x n`, and that `n` is a power of 2.
 
-Another way to compute matrix-matrix multiplication is not to use three nested for-loops, but to use blocked multiplication.  This can have the advantage of reducing the number of cache misses that occur when performing the algorithm.
+Another way to compute matrix-matrix multiplication is not to use three nested for-loops, but to use blocked multiplication.  This can have the advantage of (potentially) reducing the number of cache misses that occur when performing the algorithm, and be extended to parallel implementations.
 
 In Python, this might look like
 ```python
@@ -171,7 +171,7 @@ I, J, and K are all slices.
 
 Write a function `matmul_blocked`, where `A = matmul_blocked(B, C)` is equivalent to `A = B @ C`.  The slices should be either `:n//2` or `n//2:`, so each recursive call reduces the number of rows and columns of the matrices involved by a factor of 2.
 
-This function should be defined recursively, where the block multiplication also uses `matmul_blocked`, unless `n <= 64`, in which case, you can just use the best version of `matmul_***` from part A.  Use Numba to create a JIT version of the function.
+This function should be defined recursively, where the block multiplication also uses `matmul_blocked`, unless `n <= 64`, in which case, you can just use the best version of `matmul_***` from part A.  Use Numba to make this function JIT compile.
 
 Compare the run time of this algorithm to the best version of `matmul_***` you wrote in part A.  Make a plot like you did in part A comparing the run times of these two functions for values of `n` in `[2**i for i in range(6,13)] `
 
@@ -192,11 +192,11 @@ This is just an option - you could do something else.
 
 Again, we'll assume square `n x n` matrices, where `n` is a power of 2.
 
-So far, all the algorithms we have seen for matrix-matrix multiplication are O(n^3).  [Strassen's algorithm](https://en.wikipedia.org/wiki/Strassen_algorithm) improves the asymptotic run time.  This is also a version of blocked matrix-matrix multiplication defined recursively, but the number of multiplications done on blocks is 7 instead of 8, at the cost of extra additions.  The Master Theorem for recursion can be used to give an asymptotic run time of `n^log2(7) = n^2.81`.
+So far, all the algorithms we have seen for matrix-matrix multiplication are O(n**3).  [Strassen's algorithm](https://en.wikipedia.org/wiki/Strassen_algorithm) improves the asymptotic run time.  This is also a version of blocked matrix-matrix multiplication defined recursively, but the number of multiplications done on blocks is 7 instead of 8, at the cost of extra additions.  The Master Theorem for recursion can be used to give an asymptotic run time of `n**log2(7) = n**2.81`.
 
-Write a function `matmul_strassen` which implements Strassen's algorithm using recursion.  Again, you can use regular matrix-matrix multiplication (choose the best `matmul_***` in part A) if the block size is `<= 64`.  Again, use Numba to produce a JIT version of the function.
+Write a function `matmul_strassen` which implements Strassen's algorithm using recursion.  Again, you can use regular matrix-matrix multiplication (choose the best `matmul_***` in part A) if the block size is `<= 64`.  Again, use Numba to produce a JIT function.
 
-Here is pseudo-code which gets you pretty close to Python:
+Here is pseudo-code which gets you pretty close to what you need:
 
 ```python
 # compute A = B @ C
@@ -220,17 +220,15 @@ A[s2, s1] = M2 + M4
 A[s2, s2] = M1 - M2 + M3 + M6
 ```
 
-Yes, this is a bit of an exercise to verify (you can if you want to).  You can essentially just replace `@` with the appropriate function call in the above to write the algorithm (and implement the rest of the function).
-
-You can ignore the Numba warnings about contiguous arrays.
+Yes, this is a bit of an exercise to verify (you can if you want to, but don't need anything in `answers.md`).  You can essentially just replace `@` with the appropriate function call in the above to write the algorithm (and implement the rest of the function).
 
 Create a loglog plot of run times for `n` in `[2**i for i in range(6,13)]`.  Compare `matmul_strassen` to `matmul_blocked`. Add a legend, axis labels, and title.
 
 Does Strassen's algorithm actually beat blocked matrix multiplication for the values of `n` that you tested?
 
-Note: Strassen's algorithm is not as stable (numerically speaking) as standard matrix-matrix multiplication, because the additions and subtractions create opportunities for numerical error.
+Note: Strassen's algorithm is not as stable (numerically speaking) as standard matrix-matrix multiplication, because the additions and subtractions create opportunities for (catastrophic) numerical error.
 
-Also note that the optimal exponent for matrix-matrix multiplication is still unknown.  The best value so far is due to Coppersmith and Winnograd, and has a value of about 2.37.
+Also note that the optimal exponent for matrix-matrix multiplication is still unknown.  The best value so far is due to Coppersmith and Winograd, and has a value of about 2.37.  This algorithm would be impractical to implement.
 
 
 ## Problem 3 - Markov Chains (20 points)
